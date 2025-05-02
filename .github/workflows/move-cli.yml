@@ -69,7 +69,7 @@ jobs:
       - name: Release project to Homebrew tap
         uses: Justintime50/homebrew-releaser@v2
         with:
-          homebrew_owner: initia-labs
+          homebrew_owner: djm07073
           homebrew_tap: homebrew-tap
           formula_folder: Formula
           version: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}
