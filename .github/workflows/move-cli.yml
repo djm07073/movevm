@@ -12,60 +12,72 @@ on:
         required: true
 
 jobs:
-  build-and-upload:
-    if: |
-      (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'v')) ||
-      (github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.version, 'v'))
-    name: Release build initia-move-cli and upload release
-  
+  linux-build:
+    name: Build on Linux (cross)
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - aarch64-unknown-linux-gnu
         include:
-          - os: ubuntu-22.04
-            target: x86_64-unknown-linux-gnu
+          - target: x86_64-unknown-linux-gnu
             suffix: linux-amd64
-          - os: ubuntu-22.04
-            target: aarch64-unknown-linux-gnu
+          - target: aarch64-unknown-linux-gnu
             suffix: linux-arm64
-          - os: macos-12
-            target: x86_64-apple-darwin
-            suffix: darwin-amd64
-          - os: macos-12
-            target: aarch64-apple-darwin
-            suffix: darwin-arm64
-    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-        
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
 
       - name: Install cross
         run: cargo install cross
 
-      - name: Build binary with cross
+      - name: Build binary
         run: |
-          cross build --release --target ${{ matrix.target }} --bin initia-move
-
+          cross build --release --target ${{ matrix.target }}
 
       - name: Create tar.gz
         run: |
           cd target/${{ matrix.target }}/release
           tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
 
-      - name: Upload binary to release
+      - name: Upload binary
         uses: softprops/action-gh-release@v2
-        if: |
-          (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'v')) ||
-          (github.event_name == 'workflow_dispatch' && startsWith(github.ref, 'refs/tags/')) 
         with:
-          name: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}
-          draft: false
-          token: ${{ secrets.GH_RELEASE_TOKEN }}
-          files: initia-move-cli-${VERSION}-${{ matrix.suffix }}.tar.gz
+          files: initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz
+  macos-build:
+    name: Build on macOS (native)
+    runs-on: macos-12
+    strategy:
+      matrix:
+        target:
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+        include:
+          - target: x86_64-apple-darwin
+            suffix: darwin-amd64
+          - target: aarch64-apple-darwin
+            suffix: darwin-arm64
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Build binary
+        run: |
+          cargo build --release --target ${{ matrix.target }} --bin initia-move
+
+      - name: Create tar.gz
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
+
+      - name: Upload binary
+        uses: softprops/action-gh-release@v2
+        with:
+          files: initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz
 
   homebrew-release:
     if: |
@@ -73,7 +85,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.version, 'v'))
     name: homebrew-release
     runs-on: ubuntu-22.04
-    needs: build-and-upload
+    needs: [linux-build, macos-build]
     steps:
       - name: Release project to Homebrew tap
         uses: Justintime50/homebrew-releaser@v2
