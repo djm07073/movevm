@@ -40,10 +40,12 @@ jobs:
           cd target/${{ matrix.target }}/release
           tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
 
-      - name: Upload binary
-        uses: softprops/action-gh-release@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          files: initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz
+          name: linux-builds
+          path: initia-move-cli-*-linux-*.tar.gz
+
   macos-build:
     name: Build on macOS (native)
     runs-on: macos-12
@@ -74,11 +76,27 @@ jobs:
           cd target/${{ matrix.target }}/release
           tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
 
-      - name: Upload binary
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-builds
+          path: initia-move-cli-*-darwin-*.tar.gz
+
+  create-release:
+    needs: [linux-build, macos-build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: linux-builds
+      - uses: actions/download-artifact@v3
+        with:
+          name: macos-builds
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz
-
+          tag_name: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-cli
+          files: initia-move-cli-*.tar.gz
   homebrew-release:
     if: |
       (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'v')) ||
