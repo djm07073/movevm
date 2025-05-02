@@ -13,6 +13,9 @@ on:
 
 jobs:
   linux-build:
+    if: |
+      (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'v')) ||
+      (github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.version, 'v'))
     name: Build on Linux (cross)
     runs-on: ubuntu-22.04
     strategy:
@@ -33,7 +36,7 @@ jobs:
 
       - name: Build binary
         run: |
-          cross build --release --target ${{ matrix.target }}
+          CARGO_PKG_VERSION=${{ github.event.inputs.version || github.event.workflow_run.head_branch }} cross build --release --target ${{ matrix.target }}
 
       - name: Create tar.gz
         run: |
@@ -47,6 +50,9 @@ jobs:
           path: initia-move-cli-*-${{ matrix.suffix }}.tar.gz
 
   macos-build:
+    if: |
+      (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'v')) ||
+      (github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.version, 'v'))
     name: Build on macOS (native)
     runs-on: macos-latest
     strategy:
@@ -69,7 +75,7 @@ jobs:
 
       - name: Build binary
         run: |
-          cargo build --release --target ${{ matrix.target }} --bin initia-move-cli
+          CARGO_PKG_VERSION=${{ github.event.inputs.version || github.event.workflow_run.head_branch }} cargo build --release --target ${{ matrix.target }} --bin initia-move-cli
 
       - name: Create tar.gz
         run: |

@@ -13,12 +13,12 @@ Install _Initia Move CLI_ by downloading the appropriate binary for your archite
 ```bash
 
 VERSION=$(curl -s https://api.github.com/repos/djm07073/movevm/releases/latest | grep '"tag_name":' | cut -d'"' -f4 | cut -c 2-)
-curl -L https://github.com/initia-labs/movevm/releases/download/v$VERSION/initia-move-cli-$VERSION-darwin-arm64.tar.gz -o initia-move-cli-$VERSION-darwin-arm64.tar.gz
-tar -xvf movevm-$VERSION-darwin-arm64.tar.gz
+curl -L https://github.com/djm07073/movevm/releases/download/v$VERSION/initia-move-cli-v$VERSION-darwin-arm64.tar.gz -o initia-move-cli-$VERSION-darwin-arm64.tar.gz
+tar -xvf initia-move-cli-$VERSION-darwin-arm64.tar.gz
 
 # Install to system path
 sudo mkdir -p /usr/local/bin
-sudo mv initia-move /usr/local/bin/
+sudo mv initia-move-cli /usr/local/bin/initia-move
 sudo chmod +x /usr/local/bin/initia-move
 
 # Clean up
@@ -29,13 +29,13 @@ rm initia-move-cli-$VERSION-darwin-arm64.tar.gz
 
 ```bash
 
-VERSION=$(curl -s https://api.github.com/repos/initia-labs/movevm/releases/latest | grep '"tag_name":' | cut -d'"' -f4 | cut -c 2-)
-curl -L https://github.com/initia-labs/movevm/releases/download/v$VERSION/initia-move-cli-$VERSION-darwin-amd64.tar.gz -o initia-move-cli-$VERSION-darwin-amd64.tar.gz
+VERSION=$(curl -s https://api.github.com/repos/djm07073/movevm/releases/latest | grep '"tag_name":' | cut -d'"' -f4 | cut -c 2-)
+curl -L https://github.com/djm07073/movevm/releases/download/$VERSION/initia-move-cli-$VERSION-darwin-amd64.tar.gz -o initia-move-cli-$VERSION-darwin-amd64.tar.gz
 tar -xvf initia-move-cli-$VERSION-darwin-amd64.tar.gz
 
 # Install to system path
 sudo mkdir -p /usr/local/bin
-sudo mv initia-move /usr/local/bin/
+sudo mv initia-move-cli /usr/local/bin/initia-move
 sudo chmod +x /usr/local/bin/initia-move
 
 # Clean up
@@ -48,12 +48,12 @@ rm initia-move-cli-$VERSION-darwin-amd64.tar.gz
 
 ```bash
 
-VERSION=$(curl -s https://api.github.com/repos/initia-labs/movevm/releases/latest | grep '"tag_name":' | cut -d'"' -f4 | cut -c 2-)-cli
-wget https://github.com/initia-labs/movevm/releases/download/v$VERSION/initia-move-cli-$VERSION-linux-amd64.tar.gz
+VERSION=$(curl -s https://api.github.com/repos/djm07073/movevm/releases/latest | grep '"tag_name":' | cut -d'"' -f4 | cut -c 2-)-cli
+wget https://github.com/djm07073/movevm/releases/download/v$VERSION/initia-move-cli-$VERSION-linux-amd64.tar.gz
 tar -xvf initia-move-cli-$VERSION-linux-amd64.tar.gz
 
 # Install to system path
-sudo install -m 755 initia-move /usr/local/bin/initia-move
+sudo install -m 755 initia-move-cli /usr/local/bin/initia-move
 
 # Clean up
 rm initia-move-cli-$VERSION-linux-amd64.tar.gz
@@ -63,8 +63,8 @@ rm initia-move-cli-$VERSION-linux-amd64.tar.gz
 
 ```bash
 
-VERSION=$(curl -s https://api.github.com/repos/initia-labs/movevm/releases/latest | grep '"tag_name":' | cut -d'"' -f4 | cut -c 2-)-cli
-wget https://github.com/initia-labs/movevm/releases/download/v$VERSION/initia-move-cli-$VERSION-linux-arm64.tar.gz
+VERSION=$(curl -s https://api.github.com/repos/djm07073/movevm/releases/latest | grep '"tag_name":' | cut -d'"' -f4 | cut -c 2-)-cli
+wget https://github.com/djm07073/movevm/releases/download/v$VERSION/initia-move-cli-$VERSION-linux-arm64.tar.gz
 tar -xvf initia-move-cli-$VERSION-linux-arm64.tar.gz
 
 sudo install -m 755 initia-move /usr/local/bin/initia-move
