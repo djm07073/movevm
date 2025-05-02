@@ -102,7 +102,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.version, 'v'))
     name: homebrew-release
     runs-on: ubuntu-22.04
-    needs: [linux-build, macos-build]
+    needs: [create-release]
     steps:
       - name: Release project to Homebrew tap
         uses: Justintime50/homebrew-releaser@v2
@@ -110,7 +110,7 @@ jobs:
           homebrew_owner: djm07073
           homebrew_tap: homebrew-tap
           formula_folder: Formula
-          version: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}
+          version: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-cli
           github_token: ${{ secrets.GH_RELEASE_TOKEN }}
           commit_owner: github-actions[bot]
           commit_email: github-actions[bot]@users.noreply.github.com
