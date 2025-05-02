@@ -38,7 +38,7 @@ jobs:
       - name: Create tar.gz
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
+          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move-cli
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4 
@@ -69,12 +69,12 @@ jobs:
 
       - name: Build binary
         run: |
-          cargo build --release --target ${{ matrix.target }} --bin initia-move
+          cargo build --release --target ${{ matrix.target }} --bin initia-move-cli
 
       - name: Create tar.gz
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
+          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move-cli
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4 
