@@ -48,7 +48,7 @@ jobs:
 
   macos-build:
     name: Build on macOS (native)
-    runs-on: macos-12
+    runs-on: macos-latest
     strategy:
       matrix:
         target:
