@@ -38,13 +38,13 @@ jobs:
       - name: Create tar.gz
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move-cli
+          tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move-cli
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4 
         with:
           name: ${{ matrix.target }}-build
-          path: movevm-*-${{ matrix.suffix }}.tar.gz
+          path: initia-move-cli-*-${{ matrix.suffix }}.tar.gz
 
   macos-build:
     name: Build on macOS (native)
@@ -74,13 +74,13 @@ jobs:
       - name: Create tar.gz
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move-cli
+          tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move-cli
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4 
         with:
           name: ${{ matrix.target }}-build
-          path: movevm-*-${{ matrix.suffix }}.tar.gz
+          path: initia-move-cli-*-${{ matrix.suffix }}.tar.gz
 
   create-release:
     needs: [linux-build, macos-build]
@@ -93,35 +93,6 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-cli
-          files: movevm-*.tar.gz
-
-  homebrew-release:
-    if: |
-      (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'v')) ||
-      (github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.version, 'v'))
-    name: homebrew-release
-    runs-on: ubuntu-22.04
-    needs: [create-release]
-    steps:
-      - name: Release project to Homebrew tap
-        uses: Justintime50/homebrew-releaser@v2
-        with:
-          homebrew_owner: djm07073
-          homebrew_tap: homebrew-tap
-          formula_folder: Formula
-          version: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-cli
-          github_token: ${{ secrets.GH_RELEASE_TOKEN }}
-          commit_owner: github-actions[bot]
-          commit_email: github-actions[bot]@users.noreply.github.com
-          install: | 
-            bin.install "initia-move-cli" => "initia-move"
-          test: 'assert_match version.to_s, shell_output("#{bin}/initia-move version")'
-          target_darwin_amd64: true
-          target_darwin_arm64: true
-          target_linux_amd64: false
-          target_linux_arm64: false
-          update_readme_table: false
-          skip_commit: false
-          debug: false
+          tag_name: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}
+          files: initia-move-cli-*.tar.gz
 
