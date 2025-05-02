@@ -33,7 +33,7 @@ jobs:
           - os: macos-12
             target: aarch64-apple-darwin
             suffix: darwin-arm64
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         
@@ -42,9 +42,13 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - name: Build binary
+      - name: Install cross
+        run: cargo install cross
+
+      - name: Build binary with cross
         run: |
-          cargo build --release --target ${{ matrix.target }} --bin initia-move
+          cross build --release --target ${{ matrix.target }} --bin initia-move
+
 
       - name: Create tar.gz
         run: |
@@ -53,7 +57,9 @@ jobs:
 
       - name: Upload binary to release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        if: |
+          (github.event_name == 'workflow_run' && startsWith(github.event.workflow_run.head_branch, 'v')) ||
+          (github.event_name == 'workflow_dispatch' && startsWith(github.ref, 'refs/tags/')) 
         with:
           name: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}
           draft: false
