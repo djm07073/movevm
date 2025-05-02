@@ -41,7 +41,7 @@ jobs:
           tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 
         with:
           name: linux-builds
           path: initia-move-cli-*-linux-*.tar.gz
@@ -77,7 +77,7 @@ jobs:
           tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 
         with:
           name: macos-builds
           path: initia-move-cli-*-darwin-*.tar.gz
