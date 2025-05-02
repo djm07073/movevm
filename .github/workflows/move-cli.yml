@@ -38,13 +38,13 @@ jobs:
       - name: Create tar.gz
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
+          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4 
         with:
           name: ${{ matrix.target }}-build
-          path: initia-move-cli-*-${{ matrix.suffix }}.tar.gz
+          path: movevm-*-${{ matrix.suffix }}.tar.gz
 
   macos-build:
     name: Build on macOS (native)
@@ -74,13 +74,13 @@ jobs:
       - name: Create tar.gz
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czvf ../../../initia-move-cli-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
+          tar -czvf ../../../movevm-${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-${{ matrix.suffix }}.tar.gz initia-move
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4 
         with:
           name: ${{ matrix.target }}-build
-          path: initia-move-cli-*-${{ matrix.suffix }}.tar.gz
+          path: movevm-*-${{ matrix.suffix }}.tar.gz
 
   create-release:
     needs: [linux-build, macos-build]
@@ -94,7 +94,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version || github.event.workflow_run.head_branch }}-cli
-          files: initia-move-cli-*.tar.gz
+          files: movevm-*.tar.gz
 
   homebrew-release:
     if: |
@@ -115,7 +115,7 @@ jobs:
           commit_owner: github-actions[bot]
           commit_email: github-actions[bot]@users.noreply.github.com
           install: | 
-              bin.install "initia-move" => "initia-move"
+            bin.install "initia-move-cli" => "initia-move"
           test: 'assert_match version.to_s, shell_output("#{bin}/initia-move version")'
           target_darwin_amd64: true
           target_darwin_arm64: true
