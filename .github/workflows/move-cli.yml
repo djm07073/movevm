@@ -136,6 +136,8 @@ jobs:
           context: tools/initia-move-cli
           file: tools/initia-move-cli/Dockerfile
           push: true
+          provenance: false
+          platforms: linux/amd64
           tags: |
             ghcr.io/${{ github.repository_owner }}/initia-move-cli:latest
             ghcr.io/${{ github.repository_owner }}/initia-move-cli:${{ github.event.inputs.version || github.event.workflow_run.head_branch }}
